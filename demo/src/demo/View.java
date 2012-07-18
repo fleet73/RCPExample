@@ -12,7 +12,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -25,8 +29,10 @@ public class View extends ViewPart {
 
 	private TableViewer viewer;
 	// We use icons
-	private static final Image CHECKED = Activator.getImageDescriptor("icons/checked.gif").createImage();
-	private static final Image UNCHECKED = Activator.getImageDescriptor("icons/unchecked.gif").createImage();
+	private static final Image CHECKED = Activator.getImageDescriptor(
+			"icons/checked.gif").createImage();
+	private static final Image UNCHECKED = Activator.getImageDescriptor(
+			"icons/unchecked.gif").createImage();
 
 	public void createPartControl(Composite parent) {
 		GridLayout layout = new GridLayout(2, false);
@@ -42,7 +48,10 @@ public class View extends ViewPart {
 	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
+		viewer.getTable().setMenu(menu);
 		createColumns(parent, viewer);
+		createMenuItem(menu, viewer.getTable().getColumn(0));
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -67,6 +76,23 @@ public class View extends ViewPart {
 
 	public TableViewer getViewer() {
 		return viewer;
+	}
+
+	private void createMenuItem(Menu parent, final TableColumn column) {
+		final MenuItem itemName = new MenuItem(parent, SWT.CHECK);
+		itemName.setText(column.getText());
+		itemName.setSelection(column.getResizable());
+		itemName.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if (itemName.getSelection()) {
+					column.setWidth(150);
+					column.setResizable(true);
+				} else {
+					column.setWidth(0);
+					column.setResizable(false);
+				}
+			}
+		});
 	}
 
 	// This will create the columns for the table
@@ -110,9 +136,9 @@ public class View extends ViewPart {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if( ((Person)element).isMarried()){
+				if (((Person) element).isMarried()) {
 					return "Yes";
-				}else
+				} else
 					return "No";
 			}
 
@@ -128,7 +154,8 @@ public class View extends ViewPart {
 
 	}
 
-	private TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
+	private TableViewerColumn createTableViewerColumn(String title, int bound,
+			final int colNumber) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
 				SWT.NONE);
 		final TableColumn column = viewerColumn.getColumn();
