@@ -23,5 +23,4 @@ public enum  ModelProvider {
 		return persons;
 	}
 
-
 }
