@@ -4,11 +4,17 @@ import model.ModelProvider;
 import model.Person;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -22,12 +28,15 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
+import sort.MyViewerComparator;
+
 import edit.FirstNameEditingSupport;
 
 public class View extends ViewPart {
 	public static final String ID = "demo.view";
 
 	private TableViewer viewer;
+	private MyViewerComparator comparator;
 	// We use icons
 	private static final Image CHECKED = Activator.getImageDescriptor(
 			"icons/checked.gif").createImage();
@@ -48,8 +57,13 @@ public class View extends ViewPart {
 	private void createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		//menu是专门用来控制某列的显示/隐藏
 		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
 		viewer.getTable().setMenu(menu);
+		//比较排序
+		comparator = new MyViewerComparator();
+		viewer.setComparator(comparator);
+
 		createColumns(parent, viewer);
 		createMenuItem(menu, viewer.getTable().getColumn(0));
 		final Table table = viewer.getTable();
@@ -60,6 +74,7 @@ public class View extends ViewPart {
 		// Get the content for the viewer, setInput will call getElements in the
 		// contentProvider
 		viewer.setInput(ModelProvider.INSTANCE.getPersons());
+		
 		// Make the selection available to other views
 		getSite().setSelectionProvider(viewer);
 		// Set the sorter for the table
@@ -141,7 +156,6 @@ public class View extends ViewPart {
 				} else
 					return "No";
 			}
-
 			@Override
 			public Image getImage(Object element) {
 				if (((Person) element).isMarried()) {
@@ -151,7 +165,32 @@ public class View extends ViewPart {
 				}
 			}
 		});
-
+//		col.setLabelProvider(new CellLabelProvider(){
+//			@Override
+//			public void update(ViewerCell cell) {
+//				cell.setText(((Person) cell.getElement()).getLastName());
+//			}
+//
+//			@Override
+//			public String getToolTipText(Object element) {
+//				return "Tooltip (" + element + ")";
+//			}
+//
+//			@Override
+//			public Point getToolTipShift(Object object) {
+//				return new Point(5, 5);
+//			}
+//
+//			@Override
+//			public int getToolTipDisplayDelayTime(Object object) {
+//				return 100; //msec
+//			}
+//
+//			@Override
+//			public int getToolTipTimeDisplayed(Object object) {
+//				return 5000; //msec
+//			}
+//		});
 	}
 
 	private TableViewerColumn createTableViewerColumn(String title, int bound,
@@ -163,9 +202,29 @@ public class View extends ViewPart {
 		column.setWidth(bound);
 		column.setResizable(true);
 		column.setMoveable(true);
+		//增加选中事件
+		column.addSelectionListener(getSelectionAdapter(column, colNumber));
 		return viewerColumn;
 	}
 
+	//事件具体定义
+	private SelectionAdapter getSelectionAdapter(final TableColumn column,
+			final int index) {
+		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				comparator.setColumn(index);
+				int dir = comparator.getDirection();
+				viewer.getTable().setSortDirection(dir);
+				viewer.getTable().setSortColumn(column);
+				viewer.refresh();
+			}
+		};
+		return selectionAdapter;
+	}
+
+
+	
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
