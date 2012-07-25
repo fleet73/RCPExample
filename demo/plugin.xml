@@ -29,5 +29,30 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="commands.ExitHandler"
+            id="demo.command.exit"
+            name="Exit">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="fileMenu"
+               label="File">
+            <command
+                  commandId="demo.command.exit"
+                  label="Exit"
+                  style="push"
+                  tooltip="Exits the application">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
 
 </plugin>

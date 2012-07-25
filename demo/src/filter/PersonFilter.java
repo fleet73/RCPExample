@@ -11,7 +11,8 @@ public class PersonFilter extends ViewerFilter {
 
 	public void setSearchText(String s) {
 		// Search must be a substring of the existing value
-		this.searchString = ".*" + s + ".*";
+		//(?i):忽略后面所有字符大小写
+		this.searchString = "(?i).*" + s + ".*";
 	}
 
 
@@ -21,6 +22,7 @@ public class PersonFilter extends ViewerFilter {
 			return true;
 		}
 		Person p = (Person) element;
+		//这里只比较了姓名,可根据实际需求修改
 		if (p.getFirstName().matches(searchString)) {
 			return true;
 		}
