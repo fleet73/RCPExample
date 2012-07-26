@@ -28,6 +28,13 @@
             name="view"
             restorable="true">
       </view>
+      <view
+            allowMultiple="true"
+            class="demo.ChangeView"
+            id="demo.changeview"
+            name="changeView"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -35,6 +42,16 @@
             defaultHandler="commands.ExitHandler"
             id="demo.command.exit"
             name="Exit">
+      </command>
+      <command
+            defaultHandler="commands.DeletePerson"
+            id="demo.command.delete"
+            name="delete">
+      </command>
+      <command
+            defaultHandler="commands.AddPerson"
+            id="demo.command.add"
+            name="Add">
       </command>
    </extension>
    <extension
@@ -44,7 +61,23 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="fileMenu"
-               label="File">
+               label="&amp;File">
+            <command
+                  commandId="demo.command.add"
+                  label="Add"
+                  style="push"
+                  tooltip="add new a person">
+            </command>
+            <command
+                  commandId="demo.command.delete"
+                  label="Delete "
+                  style="push"
+                  tooltip="delete selected person">
+            </command>
+            <separator
+                  name="demo.separator1"
+                  visible="true">
+            </separator>
             <command
                   commandId="demo.command.exit"
                   label="Exit"
@@ -53,6 +86,15 @@
             </command>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="demo.command.add"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="alt+1">
+      </key>
    </extension>
 
 </plugin>
