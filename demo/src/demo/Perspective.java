@@ -12,6 +12,7 @@ public class Perspective implements IPerspectiveFactory {
 		//layout.addView(View.ID, IPageLayout.LEFT, 0.5f, IPageLayout.ID_EDITOR_AREA);
 		IFolderLayout folder = layout.createFolder("messages", IPageLayout.TOP, 0.5f, editorArea);
 		//folder.addPlaceholder(View.ID + ":*");
+		//layout.addStandaloneView(View.ID,  false, IPageLayout.LEFT, 1.0f, editorArea);
 		folder.addView(View.ID);
 		folder.addView(ChangeView.ID);
 		

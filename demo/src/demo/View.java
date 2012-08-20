@@ -255,7 +255,7 @@ public class View extends ViewPart {
 			}
 		});
 	}
-
+   //question 右键菜单中加入一个弹出对话框的选项
 	private void createMenuItem(Menu parent) {
 		final MenuItem itemName = new MenuItem(parent, SWT.CHECK);
 		itemName.setText("pop up a message");
@@ -302,7 +302,7 @@ public class View extends ViewPart {
 		return selectionAdapter;
 	}
 
-	//扩展 菜单中删除
+	//question 扩展 右键 菜单中加入删除
 	private void delete(Menu parent) {
 		final MenuItem itemName = new MenuItem(parent, SWT.DEFAULT);
 		itemName.setText("delete");

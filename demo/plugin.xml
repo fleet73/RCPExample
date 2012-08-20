@@ -18,6 +18,11 @@
             class="demo.Perspective"
             id="demo.perspective">
       </perspective>
+      <perspective
+            class="demo.Perspective"
+            id="demo.perspective1"
+            name="name">
+      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -95,6 +100,38 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="alt+1">
       </key>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="demo.application"
+            name="demo">
+         <property
+               name="appName"
+               value="demo">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample.gif">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,275,445,15">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,252,445,20">
+         </property>
+      </product>
    </extension>
 
 </plugin>
